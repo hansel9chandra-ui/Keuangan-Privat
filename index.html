@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keuanganku – Catatan Uang Mahasiswa</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <h1>Keuanganku</h1>
+  <label class="month" id="monthwrap" hidden>Bulan <input type="month" id="month"></label>
+  <div class="actions" id="actions" hidden>
+    <button class="btn" data-act="lock">Kunci</button>
+    <button class="btn primary" data-act="new-tx">Tambah transaksi</button>
+    <button class="btn" data-act="new-cat">Tambah kategori</button>
+    <details class="menu">
+      <summary class="btn">Data</summary>
+      <div class="pop">
+        <button data-act="export-json">Ekspor cadangan (JSON)</button>
+        <button data-act="export-csv">Ekspor transaksi (CSV)</button>
+        <button data-act="import">Impor cadangan</button>
+        <button data-act="change-pw">Ganti password</button>
+        <button data-act="reset" class="danger">Hapus semua data</button>
+      </div>
+    </details>
+    <input type="file" id="file" accept="application/json" hidden>
+  </div>
+</header>
+
+<section class="gate" id="lock" hidden>
+  <h2 id="lock-title"></h2>
+  <p id="lock-desc"></p>
+  <form id="lockform">
+    <input type="password" inputmode="numeric" name="pw" id="pw" required placeholder="Password" aria-label="Password" autocomplete="current-password">
+    <input type="password" inputmode="numeric" name="pw2" id="pw2" placeholder="Ulangi password" aria-label="Ulangi password" autocomplete="new-password" hidden>
+    <p class="err" id="lock-err" role="alert"></p>
+    <button class="btn primary" id="lock-btn">Buka</button>
+  </form>
+  <p><button class="ic" data-act="forgot" id="forgot">Lupa password?</button></p>
+</section>
+
+<main id="app" hidden>
+  <section class="summary" id="summary" aria-label="Ringkasan"></section>
+
+  <div class="cols">
+    <section aria-labelledby="h-cat">
+      <h2 id="h-cat">Kategori</h2>
+      <div id="cats"></div>
+      <h2>Pengeluaran per kategori</h2>
+      <div id="chart" class="chart"></div>
+    </section>
+
+    <section aria-labelledby="h-his">
+      <h2 id="h-his">Riwayat transaksi</h2>
+      <div class="filters">
+        <input type="search" id="q" placeholder="Cari catatan…" aria-label="Cari catatan">
+        <select id="fcat" aria-label="Filter kategori"></select>
+        <select id="ftype" aria-label="Filter jenis">
+          <option value="">Semua jenis</option>
+          <option value="out">Pengeluaran</option>
+          <option value="in">Pemasukan</option>
+        </select>
+      </div>
+      <div id="list"></div>
+    </section>
+  </div>
+</main>
+
+<dialog id="dtx">
+  <form id="ftx">
+    <h3 id="dtx-title">Transaksi</h3>
+    <div class="seg" role="radiogroup" aria-label="Jenis">
+      <label><input type="radio" name="type" value="out" checked><span>Pengeluaran</span></label>
+      <label><input type="radio" name="type" value="in"><span>Pemasukan</span></label>
+    </div>
+    <label>Jumlah (Rp)<input name="amount" type="number" min="1" step="1" required inputmode="numeric"></label>
+    <label>Kategori<select name="cat" required></select></label>
+    <label>Tanggal<input name="date" type="date" required></label>
+    <label>Catatan<input name="note" maxlength="120" placeholder="Contoh: makan siang di kantin"></label>
+    <div class="row"><button type="button" class="btn" data-close>Batal</button><button class="btn primary">Simpan</button></div>
+  </form>
+</dialog>
+
+<dialog id="dcat">
+  <form id="fcatform">
+    <h3 id="dcat-title">Kategori</h3>
+    <label>Nama kategori<input name="name" maxlength="30" required></label>
+    <label>Warna<input name="color" type="color" value="#2f6fb5"></label>
+    <label>Anggaran per bulan (Rp, opsional)<input name="budget" type="number" min="0" step="1" value="0" inputmode="numeric"></label>
+    <div class="row"><button type="button" class="btn" data-close>Batal</button><button class="btn primary">Simpan</button></div>
+  </form>
+</dialog>
+
+<dialog id="dpw">
+  <form id="fpw">
+    <h3>Ganti password</h3>
+    <label>Password lama<input name="old" type="password" inputmode="numeric" required autocomplete="current-password"></label>
+    <label>Password baru (min. 6 karakter)<input name="n1" type="password" inputmode="numeric" required minlength="6" autocomplete="new-password"></label>
+    <label>Ulangi password baru<input name="n2" type="password" inputmode="numeric" required minlength="6" autocomplete="new-password"></label>
+    <div class="row"><button type="button" class="btn" data-close>Batal</button><button class="btn primary">Simpan</button></div>
+  </form>
+</dialog>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
